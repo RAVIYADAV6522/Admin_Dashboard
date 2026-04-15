@@ -80,12 +80,11 @@ export const getTransactions = async (req, res, next) => {
       } catch {
         throw new AppError("Invalid sort parameter: must be valid JSON", 400);
       }
-      if (!sortParsed?.field) {
-        throw new AppError("Invalid sort: field is required", 400);
+      if (sortParsed?.field) {
+        sortFormatted = {
+          [sortParsed.field]: sortParsed.sort === "asc" ? 1 : -1,
+        };
       }
-      sortFormatted = {
-        [sortParsed.field]: sortParsed.sort === "asc" ? 1 : -1,
-      };
     }
 
     const searchFilter = search

@@ -17,7 +17,7 @@ const Transactions = () => {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
 
-  const { data, isLoading, error } = useGetTransactionsQuery({
+  const { data, isLoading, isFetching, error } = useGetTransactionsQuery({
     page: paginationModel.page,
     pageSize: paginationModel.pageSize,
     sort: JSON.stringify(sort),
@@ -39,7 +39,7 @@ const Transactions = () => {
       headerName: "# of Products",
       flex: 0.5,
       sortable: false,
-      renderCell: (params) => params.value.length,
+      renderCell: (params) => params.value?.length ?? 0,
     },
     {
       field: "cost",
@@ -57,7 +57,7 @@ const Transactions = () => {
         sx={getDataGridStyles(theme)}
       >
         <DataGrid
-          loading={isLoading || !data}
+          loading={(isLoading || isFetching) && !error}
           getRowId={(row) => row._id}
           rows={(data && data.transactions) || []}
           columns={columns}

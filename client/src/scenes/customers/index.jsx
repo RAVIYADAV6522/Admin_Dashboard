@@ -41,7 +41,9 @@ const Customers = () => {
       headerName: "Phone Number",
       flex: 0.5,
       renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
+        const v = params.value;
+        if (v == null || String(v).length < 10) return v ?? "—";
+        return String(v).replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
       },
     },
     {

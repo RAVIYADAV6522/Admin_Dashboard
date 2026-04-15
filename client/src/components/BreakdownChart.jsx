@@ -17,7 +17,7 @@ const BreakdownChart = memo(({ isDashboard = false }) => {
     theme.palette.secondary[300],
     theme.palette.secondary[500],
   ];
-  const formattedDate = Object.entries(data.salesByCategory).map(
+  const formattedDate = Object.entries(data.salesByCategory ?? {}).map(
     ([category, sales], i) => ({
       id: category,
       label: category,

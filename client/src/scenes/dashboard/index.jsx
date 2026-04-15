@@ -35,7 +35,7 @@ const Dashboard = () => {
       headerName: "# of Products",
       flex: 0.5,
       sortable: false,
-      renderCell: (params) => params.value.length,
+      renderCell: (params) => params.value?.length ?? 0,
     },
     {
       field: "cost",
@@ -78,7 +78,7 @@ const Dashboard = () => {
         {/*ROW 1 */}
         <StatBox
           title="Total Customers"
-          value={data && data.totalCustomers}
+          value={data?.totalCustomers ?? 0}
           increase="+14%"
           description=" Since last month"
           icon={
@@ -89,7 +89,7 @@ const Dashboard = () => {
         />
         <StatBox
           title="Sales Today"
-          value={data && data.todayStats.totalSales}
+          value={data?.todayStats?.totalSales ?? 0}
           increase="+21%"
           description=" Since last month"
           icon={
@@ -109,7 +109,7 @@ const Dashboard = () => {
         </Box>
         <StatBox
           title="Monthly Sales"
-          value={data && data.thisMonthStat.totalSales}
+          value={data?.thisMonthStat?.totalSales ?? 0}
           increase="+5%"
           description="Since last month"
           icon={
@@ -120,7 +120,7 @@ const Dashboard = () => {
         />
         <StatBox
           title="Yearly Sales"
-          value={data && data.yearlySalesTotal}
+          value={data?.yearlySalesTotal ?? 0}
           increase="+43%"
           description="Since last month"
           icon={
@@ -136,9 +136,9 @@ const Dashboard = () => {
           sx={getDataGridStyles(theme)}
         >
           <DataGrid
-            loading={isLoading || !data}
+            loading={isLoading}
             getRowId={(row) => row._id}
-            rows={(data && data.transactions) || []}
+            rows={data?.transactions ?? []}
             columns={columns}
           />
         </Box>

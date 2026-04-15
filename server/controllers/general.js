@@ -29,15 +29,25 @@ export const getDashboardStats = async (req, res, next) => {
         .lean();
 
       const overallStat = await OverallStat.find({ year: currentYear }).lean();
-      if (!overallStat.length) {
+      let doc = overallStat[0];
+      if (!doc) {
         const fallback = await OverallStat.find().sort({ year: -1 }).limit(1).lean();
-        if (!fallback.length) {
-          throw new AppError("No dashboard statistics in database", 404);
-        }
-        return buildDashboardPayload(fallback[0], currentMonth, currentDay, transactions);
+        doc = fallback[0];
+      }
+      if (!doc) {
+        return {
+          totalCustomers: 0,
+          yearlyTotalSoldUnits: 0,
+          yearlySalesTotal: 0,
+          monthlyData: [],
+          salesByCategory: {},
+          thisMonthStat: null,
+          todayStats: null,
+          transactions,
+        };
       }
 
-      return buildDashboardPayload(overallStat[0], currentMonth, currentDay, transactions);
+      return buildDashboardPayload(doc, currentMonth, currentDay, transactions);
     });
 
     res.status(200).json(payload);

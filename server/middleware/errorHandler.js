@@ -1,6 +1,15 @@
 import { AppError } from "../utils/AppError.js";
 
 export const errorHandler = (err, req, res, next) => {
+  if (err?.code === 11000) {
+    const field = Object.keys(err.keyPattern || {})[0];
+    const message =
+      field === "email"
+        ? "Email already registered"
+        : "That value is already taken";
+    return res.status(409).json({ message });
+  }
+
   const statusCode = err instanceof AppError
     ? err.statusCode
     : err.statusCode || err.status || 500;

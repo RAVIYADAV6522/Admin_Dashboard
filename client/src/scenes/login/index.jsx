@@ -14,6 +14,8 @@ import { useDispatch } from "react-redux";
 import { useLoginMutation, useRegisterMutation, api } from "state/api";
 import { setCredentials } from "state";
 import FlexBetween from "components/FlexBetween";
+import { getApiErrorMessage } from "utils/apiError";
+import { BRAND } from "config/branding";
 
 const Login = () => {
   const theme = useTheme();
@@ -41,13 +43,13 @@ const Login = () => {
       dispatch(api.util.resetApiState());
       navigate("/dashboard", { replace: true });
     } catch (err) {
-      const msg =
-        err?.data?.message ||
-        err?.error ||
-        (typeof err === "string" ? err : "Login failed");
-      setError(msg);
+      const fallback =
+        mode === "register" ? "Registration failed." : "Sign in failed.";
+      setError(getApiErrorMessage(err, fallback));
     }
   };
+
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Box
@@ -55,23 +57,54 @@ const Login = () => {
       display="flex"
       alignItems="center"
       justifyContent="center"
-      sx={{ backgroundColor: theme.palette.background.default }}
+      px={2}
+      sx={{
+        background: isDark
+          ? "radial-gradient(ellipse 90% 60% at 70% -15%, rgba(34, 211, 238, 0.14), transparent), radial-gradient(ellipse 70% 50% at -10% 50%, rgba(139, 92, 246, 0.12), transparent), linear-gradient(180deg, #020203 0%, #06060a 100%)"
+          : theme.palette.background.default,
+      }}
     >
       <Paper
-        elevation={3}
+        elevation={0}
         sx={{
           p: 4,
           maxWidth: 420,
           width: "100%",
-          backgroundColor: theme.palette.background.alt,
+          borderRadius: "20px",
+          border: `1px solid ${isDark ? "rgba(34, 211, 238, 0.2)" : "rgba(0,0,0,0.08)"}`,
+          background: isDark
+            ? "linear-gradient(165deg, rgba(34,211,238,0.07) 0%, rgba(14,14,20,0.96) 55%)"
+            : theme.palette.background.paper,
+          boxShadow: isDark ? "0 24px 64px rgba(0,0,0,0.55), 0 0 80px rgba(34,211,238,0.06)" : "0 16px 48px rgba(0,0,0,0.08)",
         }}
       >
-        <FlexBetween sx={{ mb: 3 }}>
-          <Typography variant="h4" fontWeight="bold" color={theme.palette.secondary[100]}>
+        <FlexBetween sx={{ mb: 1 }}>
+          <Typography
+            variant="overline"
+            sx={{
+              letterSpacing: "0.25em",
+              fontWeight: 700,
+              color: "primary.main",
+              fontFamily: '"JetBrains Mono", monospace',
+            }}
+          >
+            {BRAND.eyebrow}
+          </Typography>
+        </FlexBetween>
+        <FlexBetween sx={{ mb: 2 }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontFamily: '"Space Grotesk", sans-serif',
+              fontWeight: 700,
+              letterSpacing: "-0.03em",
+              color: "text.primary",
+            }}
+          >
             {mode === "login" ? "Sign in" : "Create account"}
           </Typography>
         </FlexBetween>
-        <Typography variant="body2" sx={{ mb: 2, color: theme.palette.secondary[300] }}>
+        <Typography variant="body2" sx={{ mb: 2, color: "text.secondary" }}>
           {mode === "login"
             ? "Sign in with the email and password you used at registration."
             : "Choose a display name, email, and password (at least 6 characters)."}
@@ -162,7 +195,7 @@ const Login = () => {
             </>
           )}
         </Typography>
-        <Typography variant="caption" display="block" sx={{ mt: 2, color: theme.palette.secondary[400] }}>
+        <Typography variant="caption" display="block" sx={{ mt: 2, color: "text.secondary" }}>
           Tip: set <code>AUTH_ENABLED=false</code> on the server and{" "}
           <code>VITE_REQUIRE_AUTH=false</code> on the client for local dev without login.
         </Typography>

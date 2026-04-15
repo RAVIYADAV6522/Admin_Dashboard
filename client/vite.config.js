@@ -16,6 +16,7 @@ export default defineConfig({
       utils: path.join(src, "utils"),
       assets: path.join(src, "assets"),
       theme: path.join(src, "theme.js"),
+      config: path.join(src, "config"),
     },
   },
   server: {

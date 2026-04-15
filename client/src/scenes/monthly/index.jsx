@@ -24,7 +24,7 @@ const Monthly = () => {
       color: theme.palette.secondary[600],
       data: [],
     };
-    Object.values(monthlyData).forEach(({ month, totalSales, totalUnits }) => {
+    (monthlyData ?? []).forEach(({ month, totalSales, totalUnits }) => {
       totalSalesLine.data.push({ x: month, y: totalSales });
       totalUnitsLine.data.push({ x: month, y: totalUnits });
     });

@@ -27,7 +27,10 @@ export const getNivoTheme = (theme) => ({
   },
   tooltip: {
     container: {
-      color: theme.palette.primary.main,
+      background: theme.palette.background.paper,
+      color: theme.palette.text.primary,
+      border: `1px solid ${theme.palette.mode === "dark" ? "rgba(34, 211, 238, 0.25)" : "rgba(0,0,0,0.08)"}`,
+      borderRadius: 8,
     },
   },
 });

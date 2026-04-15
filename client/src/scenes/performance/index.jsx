@@ -10,9 +10,12 @@ import { getDataGridStyles } from "utils/dataGridStyles";
 const Performance = () => {
   const theme = useTheme();
   const userId = useSelector((state) => state.global.userId);
-  const { data, isLoading } = useGetUserPerformanceQuery(userId, {
-    skip: !userId,
-  });
+  const { data, isLoading, isFetching, error } = useGetUserPerformanceQuery(
+    userId,
+    {
+      skip: !userId,
+    }
+  );
   const columns = [
     {
       field: "_id",
@@ -34,7 +37,7 @@ const Performance = () => {
       headerName: "# of Products",
       flex: 0.5,
       sortable: false,
-      renderCell: (params) => params.value.length,
+      renderCell: (params) => params.value?.length ?? 0,
     },
     {
       field: "cost",
@@ -52,7 +55,7 @@ const Performance = () => {
         sx={getDataGridStyles(theme)}
       >
         <DataGrid
-          loading={isLoading || !data}
+          loading={!userId ? false : (isLoading || isFetching) && !error}
           getRowId={(row) => row._id}
           rows={(data && data.sales) || []}
           columns={columns}

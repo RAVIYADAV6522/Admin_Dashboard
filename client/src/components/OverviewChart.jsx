@@ -23,7 +23,7 @@ const OverviewChart = memo(({ isDashboard = false, view }) => {
       color: theme.palette.secondary[600],
       data: [],
     };
-    Object.values(monthlyData).reduce(
+    Object.values(monthlyData ?? []).reduce(
       (acc, { month, totalSales, totalUnits }) => {
         const curSales = acc.sales + totalSales;
         const curUnits = acc.units + totalUnits;

@@ -1,11 +1,12 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { lazy, Suspense, useMemo } from "react";
+import { lazy, Suspense, useMemo, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { themeSettings } from "theme";
 import Layout from "scenes/layout";
 import { RequireAuth, LoginGate } from "components/RequireAuth";
+import { BRAND } from "config/branding";
 
 const Login = lazy(() => import("scenes/login"));
 const Dashboard = lazy(() => import("scenes/dashboard"));
@@ -23,6 +24,11 @@ const Performance = lazy(() => import("scenes/performance"));
 function App() {
   const mode = useSelector((state) => state.global.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+
+  useEffect(() => {
+    document.title = BRAND.documentTitle;
+  }, []);
+
   return (
     <div className="app">
       <BrowserRouter>

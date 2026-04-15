@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
-import { AppError } from "../utils/AppError.js";
 
 export const getAdmins = async (req, res, next) => {
   try {
@@ -49,7 +48,7 @@ export const getUserPerformance = async (req, res, next) => {
     ]);
 
     if (!userWithStats.length) {
-      throw new AppError("User performance not found", 404);
+      return res.status(200).json({ user: null, sales: [] });
     }
 
     const saleTransactions = await Promise.all(
