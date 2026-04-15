@@ -6,20 +6,23 @@ import getCountryIso3 from "country-iso-2-to-3";
 
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
-    const ProductsWithStats = await Promise.all(
-      products.map(async (product) => {
-        const stat = await ProductStat.find({
-          productId: product._id
-        })
+    const products = await Product.find().lean();
+    const productIds = products.map((p) => p._id);
+    const allStats = await ProductStat.find({ productId: { $in: productIds } }).lean();
 
-        return {
-          ...product._doc,
-          stat,
-        };
-      })
-    );
-    res.status(200).json(ProductsWithStats);
+    const statsMap = {};
+    allStats.forEach((stat) => {
+      const key = stat.productId.toString();
+      if (!statsMap[key]) statsMap[key] = [];
+      statsMap[key].push(stat);
+    });
+
+    const productsWithStats = products.map((product) => ({
+      ...product,
+      stat: statsMap[product._id.toString()] || [],
+    }));
+
+    res.status(200).json(productsWithStats);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -27,7 +30,7 @@ export const getProducts = async (req, res) => {
 
 export const getCustomers = async (req, res) => {
   try {
-    const customers = await User.find({ role: "user" }).select("-password");
+    const customers = await User.find({ role: "user" }).select("-password").lean();
     res.status(200).json(customers);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -62,7 +65,8 @@ export const getTransactions = async (req, res) => {
     const transactions = await Transaction.find(searchFilter)
       .sort(sortFormatted)
       .skip(page * pageSize)
-      .limit(pageSize);
+      .limit(pageSize)
+      .lean();
 
     const total = await Transaction.countDocuments(searchFilter);
 
@@ -77,7 +81,7 @@ export const getTransactions = async (req, res) => {
 
 export const getGeography = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().lean();
 
     const mappedLocations = users.reduce((acc, { country }) => {
       const countryISO3 = getCountryIso3(country);

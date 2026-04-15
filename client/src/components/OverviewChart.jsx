@@ -1,11 +1,13 @@
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { ResponsiveLine } from "@nivo/line";
 import { useTheme } from "@mui/material";
 import { useGetSalesQuery } from "state/api";
+import { getNivoTheme } from "utils/nivoTheme";
 
-const OverviewChart = ({ isDashboard = false, view }) => {
+const OverviewChart = memo(({ isDashboard = false, view }) => {
   const theme = useTheme();
   const { data, isLoading } = useGetSalesQuery();
+  const nivoTheme = useMemo(() => getNivoTheme(theme), [theme]);
 
   const [totalSalesLine, totalUnitsLine] = useMemo(() => {
     if (!data) return [];
@@ -26,14 +28,8 @@ const OverviewChart = ({ isDashboard = false, view }) => {
         const curSales = acc.sales + totalSales;
         const curUnits = acc.units + totalUnits;
 
-        totalSalesLine.data = [
-          ...totalSalesLine.data,
-          { x: month, y: curSales },
-        ];
-        totalUnitsLine.data = [
-          ...totalUnitsLine.data,
-          { x: month, y: curUnits },
-        ];
+        totalSalesLine.data.push({ x: month, y: curSales });
+        totalUnitsLine.data.push({ x: month, y: curUnits });
 
         return { sales: curSales, units: curUnits };
       },
@@ -41,46 +37,14 @@ const OverviewChart = ({ isDashboard = false, view }) => {
     );
 
     return [[totalSalesLine], [totalUnitsLine]];
-  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, theme]);
 
   if (!data || isLoading) return "Loading...";
 
   return (
     <ResponsiveLine
       data={view === "sales" ? totalSalesLine : totalUnitsLine}
-      theme={{
-        axis: {
-          domain: {
-            line: {
-              stroke: theme.palette.secondary[200],
-            },
-          },
-          legend: {
-            text: {
-              fill: theme.palette.secondary[200],
-            },
-          },
-          ticks: {
-            line: {
-              stroke: theme.palette.secondary[200],
-              strokeWidth: 1,
-            },
-            text: {
-              fill: theme.palette.secondary[200],
-            },
-          },
-        },
-        legends: {
-          text: {
-            fill: theme.palette.secondary[200],
-          },
-        },
-        tooltip: {
-          container: {
-            color: theme.palette.primary.main,
-          },
-        },
-      }}
+      theme={nivoTheme}
       margin={{ top: 20, right: 50, bottom: 50, left: 70 }}
       xScale={{ type: "point" }}
       yScale={{
@@ -161,6 +125,7 @@ const OverviewChart = ({ isDashboard = false, view }) => {
       }
     />
   );
-};
+});
 
 export default OverviewChart;
+OverviewChart.displayName = "OverviewChart";

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { DataGrid } from "@mui/x-data-grid";
 import Header from "components/Header";
 import CustomColumnMenu from "components/DataGridCustomColumnMenu";
+import { getDataGridStyles } from "utils/dataGridStyles";
 
 const Performance = () => {
   const theme = useTheme();
@@ -46,30 +47,7 @@ const Performance = () => {
       <Box
         mt="40px"
         height="75vh"
-        sx={{
-          "& .MuiDataGrid-columnHeadersInner": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            border: "none",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
-          },
-          "& .MuiDataGrid-footerContainer": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderTop: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${theme.palette.secondary[200]} !important`,
-          },
-        }}
+        sx={getDataGridStyles(theme)}
       >
         <DataGrid
           loading={isLoading || !data}

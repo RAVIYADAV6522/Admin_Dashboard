@@ -9,7 +9,10 @@ const TransactionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// Create a model from the schema
+
+TransactionSchema.index({ userId: 1 });
+TransactionSchema.index({ createdAt: -1 });
+
 const Transaction = mongoose.model("Transaction", TransactionSchema);
 export default Transaction;
 

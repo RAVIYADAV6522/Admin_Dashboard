@@ -3,9 +3,12 @@ import { Box, useTheme } from "@mui/material";
 import Header from "components/Header";
 import { useGetSalesQuery } from "state/api";
 import { ResponsiveLine } from "@nivo/line";
+import { getNivoTheme } from "utils/nivoTheme";
+
 const Monthly = () => {
   const { data } = useGetSalesQuery();
   const theme = useTheme();
+  const nivoTheme = useMemo(() => getNivoTheme(theme), [theme]);
 
   const [formattedData] = useMemo(() => {
     if (!data) return [];
@@ -22,20 +25,14 @@ const Monthly = () => {
       data: [],
     };
     Object.values(monthlyData).forEach(({ month, totalSales, totalUnits }) => {
-      totalSalesLine.data = [
-        ...totalSalesLine.data,
-        { x: month, y: totalSales },
-      ];
-      totalUnitsLine.data = [
-        ...totalUnitsLine.data,
-        { x: month, y: totalUnits },
-      ];
+      totalSalesLine.data.push({ x: month, y: totalSales });
+      totalUnitsLine.data.push({ x: month, y: totalUnits });
     });
 
     const formattedData = [totalSalesLine, totalUnitsLine];
 
     return [formattedData];
-  }, [data]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [data, theme]);
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="MONTHLY SALES" subtitle="Chart of monthly sales" />
@@ -43,39 +40,7 @@ const Monthly = () => {
         {data ? (
           <ResponsiveLine
             data={formattedData}
-            theme={{
-              axis: {
-                domain: {
-                  line: {
-                    stroke: theme.palette.secondary[200],
-                  },
-                },
-                legend: {
-                  text: {
-                    fill: theme.palette.secondary[200],
-                  },
-                },
-                ticks: {
-                  line: {
-                    stroke: theme.palette.secondary[200],
-                    strokeWidth: 1,
-                  },
-                  text: {
-                    fill: theme.palette.secondary[200],
-                  },
-                },
-              },
-              legends: {
-                text: {
-                  fill: theme.palette.secondary[200],
-                },
-              },
-              tooltip: {
-                container: {
-                  color: theme.palette.primary.main,
-                },
-              },
-            }}
+            theme={nivoTheme}
             colors={{ datum: "color" }}
             margin={{ top: 50, right: 50, bottom: 50, left: 60 }}
             xScale={{ type: "point" }}

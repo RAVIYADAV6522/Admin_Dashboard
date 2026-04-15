@@ -140,19 +140,19 @@ Cosmetic & Quality (10 tasks)
 
 ```
 Frontend Performance (7 tasks)
-  [ ] 30. Code-split all 12 pages with React.lazy
-  [ ] 31. Move geoData to public/ and lazy-load
-  [ ] 32. React.memo on chart components
-  [ ] 33. Fix array spread → push in charts
-  [ ] 34. Extract shared DataGrid styles utility
-  [ ] 35. Extract shared Nivo theme utility
-  [ ] 36. Migrate CRA → Vite
+  [x] 30. Code-split all 12 pages with React.lazy
+  [x] 31. Lazy-load geoData via dynamic import()
+  [x] 32. React.memo on chart components
+  [x] 33. Fix array spread → push in charts
+  [x] 34. Extract shared DataGrid styles utility
+  [x] 35. Extract shared Nivo theme utility
+  [x] 36. Migrate CRA → Vite (`vite.config.js`, root `index.html`, `VITE_BASE_URL`, `src/index.jsx` + `App.jsx`)
 
 Backend Performance (4 tasks)
-  [ ] 37. Add MongoDB indexes to all models
-  [ ] 38. Fix N+1 → single query in getProducts
-  [ ] 39. Add .lean() to all read queries
-  [ ] 40. Replace hardcoded dates with dynamic values
+  [x] 37. Add MongoDB indexes to all models
+  [x] 38. Fix N+1 → single query in getProducts
+  [x] 39. Add .lean() to all read queries
+  [x] 40. Replace hardcoded dates with dynamic values
 ```
 
 **Verification:** After Phase 2, measure and confirm:

@@ -28,7 +28,9 @@ const overallStatSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// Create a model from the schema
+
+overallStatSchema.index({ year: 1 });
+
 const overallStat = mongoose.model("overallStat", overallStatSchema);
 export default overallStat;
 
