@@ -3,7 +3,7 @@ import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
 export const getAdmins = async (req, res) => {
   try {
-    const admins = await User.find({ role: "admin" }).select("-password");
+    const admins = await User.find({ role: "admin" }).select("-password").lean();
     res.status(200).json(admins);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -33,7 +33,7 @@ export const getUserPerformance = async (req, res) => {
     ]);
 
 
-    const saleTransactions = await Promise.all(userWithStats[0].affiliateStats.affiliateSales.map((id) => { return Transaction.findById(id) }));
+    const saleTransactions = await Promise.all(userWithStats[0].affiliateStats.affiliateSales.map((id) => { return Transaction.findById(id).lean() }));
 
     const filteredSaleTransactions = saleTransactions.filter((transaction) => transaction !== null);
 

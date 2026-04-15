@@ -3,6 +3,7 @@ import { Box, useTheme } from "@mui/material";
 import { useGetCustomersQuery } from "state/api";
 import Header from "components/Header";
 import { DataGrid } from "@mui/x-data-grid";
+import { getDataGridStyles } from "utils/dataGridStyles";
 
 const Customers = () => {
   const theme = useTheme();
@@ -55,30 +56,7 @@ const Customers = () => {
       <Box
         mt="40px"
         height="75vh"
-        sx={{
-          "& .MuiDataGrid-columnHeadersInner": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            border: "none",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
-          },
-          "& .MuiDataGrid-footerContainer": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderTop: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${theme.palette.secondary[200]} !important`,
-          },
-        }}
+        sx={getDataGridStyles(theme)}
       >
         <DataGrid
           loading={isLoading || !data}

@@ -1,10 +1,13 @@
-import React from "react";
+import React, { memo, useMemo } from "react";
 import { ResponsivePie } from "@nivo/pie";
 import { Box, Typography, useTheme } from "@mui/material";
 import { useGetSalesQuery } from "state/api";
-const BreakdownChart = ({ isDashboard = false, view }) => {
+import { getNivoTheme } from "utils/nivoTheme";
+
+const BreakdownChart = memo(({ isDashboard = false }) => {
   const { data, isLoading } = useGetSalesQuery();
   const theme = useTheme();
+  const nivoTheme = useMemo(() => getNivoTheme(theme), [theme]);
 
   if (!data || isLoading) return "Loading...";
 
@@ -33,39 +36,7 @@ const BreakdownChart = ({ isDashboard = false, view }) => {
     >
       <ResponsivePie
         data={formattedDate}
-        theme={{
-          axis: {
-            domain: {
-              line: {
-                stroke: theme.palette.secondary[200],
-              },
-            },
-            legend: {
-              text: {
-                fill: theme.palette.secondary[200],
-              },
-            },
-            ticks: {
-              line: {
-                stroke: theme.palette.secondary[200],
-                strokeWidth: 1,
-              },
-              text: {
-                fill: theme.palette.secondary[200],
-              },
-            },
-          },
-          legends: {
-            text: {
-              fill: theme.palette.secondary[200],
-            },
-          },
-          tooltip: {
-            container: {
-              color: theme.palette.primary.main,
-            },
-          },
-        }}
+        theme={nivoTheme}
         colors={{ datum: "data.color" }}
         margin={
           isDashboard
@@ -135,6 +106,7 @@ const BreakdownChart = ({ isDashboard = false, view }) => {
       </Box>
     </Box>
   );
-};
+});
 
 export default BreakdownChart;
+BreakdownChart.displayName = "BreakdownChart";
