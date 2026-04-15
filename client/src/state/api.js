@@ -1,20 +1,49 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_BASE_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: import.meta.env.VITE_BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().global.token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
   reducerPath: "adminApi",
   tagTypes: ["User", "Products", "Customers", "Transactions", "Geography", "Sales", "Admins", "Performance", "Dashboard"],
   endpoints: (build) => ({
+    login: build.mutation({
+      query: (body) => ({
+        url: "auth/login",
+        method: "POST",
+        body,
+      }),
+    }),
+    register: build.mutation({
+      query: (body) => ({
+        url: "auth/register",
+        method: "POST",
+        body,
+      }),
+    }),
     getUser: build.query({
       query: (id) => `general/user/${id}`,
-      providesTags: ["User"]
+      providesTags: ["User"],
     }),
     getProducts: build.query({
-      query: () => `client/products`,
+      query: ({ page = 0, pageSize = 12 } = {}) => ({
+        url: "client/products",
+        params: { page, pageSize },
+      }),
       providesTags: ["Products"],
     }),
     getCustomers: build.query({
-      query: () => "client/customers",
+      query: ({ page = 0, pageSize = 25 } = {}) => ({
+        url: "client/customers",
+        params: { page, pageSize },
+      }),
       providesTags: ["Customers"],
     }),
     getTransactions: build.query({
@@ -34,22 +63,33 @@ export const api = createApi({
       providesTags: ["Sales"],
     }),
     getAdmins: build.query({
-      query: () => "management/admins",
-      providesTags: ["Admins"]
+      query: ({ page = 0, pageSize = 25 } = {}) => ({
+        url: "management/admins",
+        params: { page, pageSize },
+      }),
+      providesTags: ["Admins"],
     }),
     getUserPerformance: build.query({
       query: (id) => `management/performance/${id}`,
-      providesTags: ["Performance"]
+      providesTags: ["Performance"],
     }),
     getDashboard: build.query({
       query: () => `general/dashboard`,
-      providesTags: ["Dashboard"]
-
+      providesTags: ["Dashboard"],
     }),
   }),
 });
 
 export const {
-  useGetUserQuery, useGetProductsQuery, useGetCustomersQuery, useGetTransactionsQuery, useGetGeographyQuery, useGetSalesQuery,
-  useGetAdminsQuery, useGetUserPerformanceQuery, useGetDashboardQuery
+  useLoginMutation,
+  useRegisterMutation,
+  useGetUserQuery,
+  useGetProductsQuery,
+  useGetCustomersQuery,
+  useGetTransactionsQuery,
+  useGetGeographyQuery,
+  useGetSalesQuery,
+  useGetAdminsQuery,
+  useGetUserPerformanceQuery,
+  useGetDashboardQuery,
 } = api;

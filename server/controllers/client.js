@@ -1,12 +1,23 @@
 import Product from "../models/Product.js";
 import ProductStat from "../models/ProductStat.js";
-import User from "../models/User.js"
-import Transaction from "../models/Transaction.js"
+import User from "../models/User.js";
+import Transaction from "../models/Transaction.js";
 import getCountryIso3 from "country-iso-2-to-3";
+import { AppError } from "../utils/AppError.js";
+import { getOrSet, cacheKeys } from "../services/cache.js";
 
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find().lean();
+    const page = Number(req.query.page) || 0;
+    const pageSize = Math.min(Number(req.query.pageSize) || 25, 100);
+
+    const total = await Product.countDocuments();
+    const products = await Product.find()
+      .sort({ _id: 1 })
+      .skip(page * pageSize)
+      .limit(pageSize)
+      .lean();
+
     const productIds = products.map((p) => p._id);
     const allStats = await ProductStat.find({ productId: { $in: productIds } }).lean();
 
@@ -22,36 +33,60 @@ export const getProducts = async (req, res) => {
       stat: statsMap[product._id.toString()] || [],
     }));
 
-    res.status(200).json(productsWithStats);
+    res.status(200).json({
+      data: productsWithStats,
+      total,
+      page,
+      pageSize,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
-}
+};
 
-export const getCustomers = async (req, res) => {
+export const getCustomers = async (req, res, next) => {
   try {
-    const customers = await User.find({ role: "user" }).select("-password").lean();
-    res.status(200).json(customers);
+    const page = Number(req.query.page) || 0;
+    const pageSize = Math.min(Number(req.query.pageSize) || 25, 100);
+
+    const total = await User.countDocuments({ role: "user" });
+    const customers = await User.find({ role: "user" })
+      .select("-password")
+      .sort({ _id: 1 })
+      .skip(page * pageSize)
+      .limit(pageSize)
+      .lean();
+
+    res.status(200).json({
+      data: customers,
+      total,
+      page,
+      pageSize,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
-}
+};
 
-export const getTransactions = async (req, res) => {
+export const getTransactions = async (req, res, next) => {
   try {
-    // sort should look like this: { "field": "userId", "sort": "desc"}
     const { page = 0, pageSize = 20, sort = null, search = "" } = req.query;
 
-    // formatted sort should look like { userId: -1 }
-    const generateSort = () => {
-      const sortParsed = JSON.parse(sort);
-      const sortFormatted = {
+    let sortFormatted = {};
+    if (sort) {
+      let sortParsed;
+      try {
+        sortParsed = JSON.parse(sort);
+      } catch {
+        throw new AppError("Invalid sort parameter: must be valid JSON", 400);
+      }
+      if (!sortParsed?.field) {
+        throw new AppError("Invalid sort: field is required", 400);
+      }
+      sortFormatted = {
         [sortParsed.field]: sortParsed.sort === "asc" ? 1 : -1,
       };
-
-      return sortFormatted;
-    };
-    const sortFormatted = Boolean(sort) ? generateSort() : {};
+    }
 
     const searchFilter = search
       ? {
@@ -64,8 +99,8 @@ export const getTransactions = async (req, res) => {
 
     const transactions = await Transaction.find(searchFilter)
       .sort(sortFormatted)
-      .skip(page * pageSize)
-      .limit(pageSize)
+      .skip(Number(page) * Number(pageSize))
+      .limit(Number(pageSize))
       .lean();
 
     const total = await Transaction.countDocuments(searchFilter);
@@ -75,30 +110,32 @@ export const getTransactions = async (req, res) => {
       total,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
-export const getGeography = async (req, res) => {
+export const getGeography = async (req, res, next) => {
   try {
-    const users = await User.find().lean();
+    const data = await getOrSet(cacheKeys.geography, 3600, async () => {
+      const users = await User.find().lean();
 
-    const mappedLocations = users.reduce((acc, { country }) => {
-      const countryISO3 = getCountryIso3(country);
-      if (!acc[countryISO3]) {
-        acc[countryISO3] = 0;
-      }
-      acc[countryISO3]++;
-      return acc;
-    }, {});
+      const mappedLocations = users.reduce((acc, { country }) => {
+        const countryISO3 = getCountryIso3(country);
+        if (!acc[countryISO3]) {
+          acc[countryISO3] = 0;
+        }
+        acc[countryISO3]++;
+        return acc;
+      }, {});
 
-    const formattedLocations = Object.entries(mappedLocations).map(
-      ([country, count]) => {
-        return { id: country, value: count }
-      }
-    );
-    res.status(200).json(formattedLocations);
+      return Object.entries(mappedLocations).map(([country, count]) => ({
+        id: country,
+        value: count,
+      }));
+    });
+
+    res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
