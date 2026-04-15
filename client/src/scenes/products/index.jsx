@@ -10,9 +10,12 @@ import {
   Rating,
   useTheme,
   useMediaQuery,
+  Pagination,
 } from "@mui/material";
 import Header from "components/Header";
 import { useGetProductsQuery } from "state/api";
+
+const PAGE_SIZE = 12;
 
 const Product = ({
   _id,
@@ -85,50 +88,67 @@ const Product = ({
 };
 
 const Products = () => {
-  const { data, isLoading } = useGetProductsQuery();
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useGetProductsQuery({
+    page: page - 1,
+    pageSize: PAGE_SIZE,
+  });
 
   const isNonMobile = useMediaQuery("(min-width:1000px)");
+  const rows = data?.data ?? [];
+  const total = data?.total ?? 0;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
       {data && !isLoading ? (
-        <Box
-          mx="20px"
-          display="grid"
-          gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-          justifyContent="space-between"
-          rowGap="20px"
-          columnGap="1.33%"
-          sx={{
-            "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-          }}
-        >
-          {data.map(
-            ({
-              _id,
-              name,
-              description,
-              price,
-              rating,
-              category,
-              supply,
-              stat,
-            }) => (
-              <Product
-                key={_id}
-                _id={_id}
-                name={name}
-                description={description}
-                price={price}
-                rating={rating}
-                category={category}
-                supply={supply}
-                stat={stat[0]}
-              />
-            )
-          )}
-        </Box>
+        <>
+          <Box
+            mx="20px"
+            display="grid"
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            justifyContent="space-between"
+            rowGap="20px"
+            columnGap="1.33%"
+            sx={{
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+            }}
+          >
+            {rows.map(
+              ({
+                _id,
+                name,
+                description,
+                price,
+                rating,
+                category,
+                supply,
+                stat,
+              }) => (
+                <Product
+                  key={_id}
+                  _id={_id}
+                  name={name}
+                  description={description}
+                  price={price}
+                  rating={rating}
+                  category={category}
+                  supply={supply}
+                  stat={stat[0]}
+                />
+              )
+            )}
+          </Box>
+          <Box display="flex" justifyContent="center" mt={3}>
+            <Pagination
+              color="secondary"
+              count={pageCount}
+              page={page}
+              onChange={(_, p) => setPage(p)}
+            />
+          </Box>
+        </>
       ) : (
         <>Loading...</>
       )}

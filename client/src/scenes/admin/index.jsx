@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { useGetAdminsQuery } from "state/api";
 import { DataGrid } from "@mui/x-data-grid";
@@ -8,7 +8,18 @@ import { getDataGridStyles } from "utils/dataGridStyles";
 
 const Admin = () => {
   const theme = useTheme();
-  const { data, isLoading } = useGetAdminsQuery();
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 25,
+  });
+
+  const { data, isLoading } = useGetAdminsQuery({
+    page: paginationModel.page,
+    pageSize: paginationModel.pageSize,
+  });
+
+  const rows = data?.data ?? [];
+  const total = data?.total ?? 0;
 
   const columns = [
     {
@@ -64,8 +75,13 @@ const Admin = () => {
         <DataGrid
           loading={isLoading || !data}
           getRowId={(row) => row._id}
-          rows={data || []}
+          rows={rows}
           columns={columns}
+          rowCount={total}
+          paginationModel={paginationModel}
+          paginationMode="server"
+          pageSizeOptions={[25, 50, 100]}
+          onPaginationModelChange={setPaginationModel}
           slots={{
             columnMenu: CustomColumnMenu,
           }}

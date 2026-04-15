@@ -10,7 +10,9 @@ import { getDataGridStyles } from "utils/dataGridStyles";
 const Performance = () => {
   const theme = useTheme();
   const userId = useSelector((state) => state.global.userId);
-  const { data, isLoading } = useGetUserPerformanceQuery(userId);
+  const { data, isLoading } = useGetUserPerformanceQuery(userId, {
+    skip: !userId,
+  });
   const columns = [
     {
       field: "_id",

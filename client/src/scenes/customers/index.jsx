@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, useTheme } from "@mui/material";
 import { useGetCustomersQuery } from "state/api";
 import Header from "components/Header";
@@ -7,7 +7,18 @@ import { getDataGridStyles } from "utils/dataGridStyles";
 
 const Customers = () => {
   const theme = useTheme();
-  const { data, isLoading } = useGetCustomersQuery();
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 25,
+  });
+
+  const { data, isLoading } = useGetCustomersQuery({
+    page: paginationModel.page,
+    pageSize: paginationModel.pageSize,
+  });
+
+  const rows = data?.data ?? [];
+  const total = data?.total ?? 0;
 
   const columns = [
     {
@@ -61,8 +72,13 @@ const Customers = () => {
         <DataGrid
           loading={isLoading || !data}
           getRowId={(row) => row._id}
-          rows={data || []}
+          rows={rows}
           columns={columns}
+          rowCount={total}
+          paginationModel={paginationModel}
+          paginationMode="server"
+          pageSizeOptions={[25, 50, 100]}
+          onPaginationModelChange={setPaginationModel}
         />
       </Box>
     </Box>
