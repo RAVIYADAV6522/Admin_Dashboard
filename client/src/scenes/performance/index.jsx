@@ -55,7 +55,7 @@ const Performance = () => {
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: theme.palette.background.alt,
-            color: theme.palette.text.secondary[100],
+            color: theme.palette.secondary[100],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -63,7 +63,7 @@ const Performance = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.background.alt,
-            color: theme.palette.text.secondary[100],
+            color: theme.palette.secondary[100],
             borderTop: "none",
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
@@ -76,8 +76,8 @@ const Performance = () => {
           getRowId={(row) => row._id}
           rows={(data && data.sales) || []}
           columns={columns}
-          components={{
-            ColumnMenu: CustomColumnMenu,
+          slots={{
+            columnMenu: CustomColumnMenu,
           }}
         />
       </Box>

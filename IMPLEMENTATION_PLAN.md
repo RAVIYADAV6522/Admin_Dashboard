@@ -66,39 +66,39 @@ This phase touches **no architecture** — only surgical fixes to existing code.
 
 ```
 Backend Logic (10 tasks)
-  [ ] 1.  Sort comparison === fix
-  [ ] 2.  .limit() → .find({ year }) fix
-  [ ] 3.  Daily stats === fix
-  [ ] 4.  createdAt sort field fix
-  [ ] 5.  Search/count filter consistency
-  [ ] 6.  Transaction schema ObjectId fix
-  [ ] 7.  Product "catagory" → "category"
-  [ ] 8.  Password .select("-password")
-  [ ] 9.  Default role → "user"
-  [ ] 10. Error status codes (404→500/400)
+  [x] 1.  Sort comparison === fix
+  [x] 2.  .limit() → .find({ year }) fix
+  [x] 3.  Daily stats === fix
+  [x] 4.  createdAt sort field fix
+  [x] 5.  Search/count filter consistency
+  [x] 6.  Transaction schema ObjectId fix
+  [x] 7.  Product "catagory" → "category"
+  [x] 8.  Password .select("-password")
+  [x] 9.  Default role → "user"
+  [x] 10. Error status codes (404→500/400)
 
 Frontend Rendering (9 tasks)
-  [ ] 11. renderCell typo — Customers
-  [ ] 12. renderCell typo — Admin
-  [ ] 13. Route /Performance → /performance
-  [ ] 14. Button variant → "contained"
-  [ ] 15. palette.text.secondary[100] → palette.secondary[100] (×6)
-  [ ] 16. StatBox borderRadius space
-  [ ] 17. StatBox palette.light path
-  [ ] 18. Products loading condition
-  [ ] 19. GridFilterAltIcon → GridColumnMenuFilterItem
+  [x] 11. renderCell typo — Customers
+  [x] 12. renderCell typo — Admin
+  [x] 13. Route /Performance → /performance
+  [x] 14. Button variant → "contained"
+  [x] 15. palette.text.secondary[100] → palette.secondary[100] (×6)
+  [x] 16. StatBox borderRadius space
+  [x] 17. StatBox palette.light path
+  [x] 18. Products loading condition
+  [x] 19. GridFilterAltIcon → GridColumnMenuFilterItem
 
 Cosmetic & Quality (10 tasks)
-  [ ] 20. Remove console.log
-  [ ] 21. "genreal" → "general"
-  [ ] 22. "Breadown" → "Breakdown"
-  [ ] 23. "Yealy" → "Yearly"
-  [ ] 24. boxSixing → boxSizing
-  [ ] 25. FlexBetween require → import
-  [ ] 26. Missing profile.png asset
-  [ ] 27. DataGrid components → slots
-  [ ] 28. nodemon → devDependencies
-  [ ] 29. .env.example files
+  [x] 20. Remove console.log
+  [x] 21. "genreal" → "general"
+  [x] 22. "Breadown" → "Breakdown"
+  [x] 23. "Yealy" → "Yearly"
+  [x] 24. boxSixing → boxSizing
+  [x] 25. FlexBetween require → import
+  [x] 26. Missing profile.png → replaced with MUI Avatar
+  [x] 27. DataGrid components → slots
+  [x] 28. nodemon → devDependencies
+  [x] 29. .env.example files
 ```
 
 **Verification:** After Phase 1, the app should run without console errors, all pages should render correctly, all DataGrid columns should work, sorting/pagination should return correct data, and no passwords should leak in API responses.

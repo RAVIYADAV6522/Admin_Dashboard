@@ -28,7 +28,7 @@ const Customers = () => {
       field: "phoneNumber",
       headerName: "Phone Number",
       flex: 0.5,
-      rederCell: (params) => {
+      renderCell: (params) => {
         return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
       },
     },
@@ -64,7 +64,7 @@ const Customers = () => {
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: theme.palette.background.alt,
-            color: theme.palette.text.secondary[100],
+            color: theme.palette.secondary[100],
             borderBottom: "none",
           },
           "& .MuiDataGrid-virtualScroller": {
@@ -72,7 +72,7 @@ const Customers = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             backgroundColor: theme.palette.background.alt,
-            color: theme.palette.text.secondary[100],
+            color: theme.palette.secondary[100],
             borderTop: "none",
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {

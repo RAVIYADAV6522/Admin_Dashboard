@@ -25,8 +25,6 @@ const Dashboard = () => {
   const theme = useTheme();
   const isNonMediumScreens = useMediaQuery("(min-width:1200px)");
   const { data, isLoading } = useGetDashboardQuery();
-  console.log("🚀 ~ Dashboard ~ data:", data);
-
   const columns = [
     { field: "_id", headerName: "ID", flex: 1 },
     { field: "userId", headerName: "User ID", flex: 1 },
@@ -120,7 +118,7 @@ const Dashboard = () => {
           }
         />
         <StatBox
-          title="Yealy Sales"
+          title="Yearly Sales"
           value={data && data.yearlySalesTotal}
           increase="+43%"
           description="Since last month"
