@@ -11,6 +11,7 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Avatar,
 } from "@mui/material";
 import {
   SettingsOutlined,
@@ -31,7 +32,6 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-import profileImage from "assets/profile.png";
 
 const navItems = [
   {
@@ -120,7 +120,7 @@ const Sidebar = ({
             "& .MuiDrawer-paper": {
               color: theme.palette.secondary[200],
               backgroundColor: theme.palette.background.alt,
-              boxSixing: "border-box",
+              boxSizing: "border-box",
               borderWidth: isNonMobile ? 0 : "2px",
               width: drawerWidth,
             },
@@ -199,15 +199,16 @@ const Sidebar = ({
               gap="1rem"
               m="1.5rem 2rem 1.5rem 3rem"
             >
-              <Box
-                component="img"
-                alt="profile"
-                src={profileImage}
-                height="40px"
-                width="40px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
+              <Avatar
+                sx={{
+                  bgcolor: theme.palette.secondary[300],
+                  height: "40px",
+                  width: "40px",
+                  fontSize: "1rem",
+                }}
+              >
+                {user.name ? user.name.charAt(0) : "U"}
+              </Avatar>
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"

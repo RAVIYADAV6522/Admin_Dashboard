@@ -54,7 +54,7 @@ const Product = ({
       </CardContent>
       <CardActions>
         <Button
-          variant="primary"
+          variant="contained"
           size="small"
           onClick={() => setIsExpanded(!isExpanded)}
         >
@@ -92,7 +92,7 @@ const Products = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
-      {data || !isLoading ? (
+      {data && !isLoading ? (
         <Box
           mx="20px"
           display="grid"

@@ -10,9 +10,9 @@ import {
 import FlexBetween from "components/FlexBetween";
 import { useDispatch } from "react-redux";
 import { setMode } from "state";
-import profileImage from "assets/profile.png";
 import {
   AppBar,
+  Avatar,
   Button,
   IconButton,
   InputBase,
@@ -81,15 +81,16 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
                 gap: "1rem",
               }}
             >
-              <Box
-                component="img"
-                alt="profile"
-                src={profileImage}
-                height="32px"
-                width="32px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
+              <Avatar
+                sx={{
+                  bgcolor: theme.palette.secondary[300],
+                  height: "32px",
+                  width: "32px",
+                  fontSize: "0.85rem",
+                }}
+              >
+                {user.name ? user.name.charAt(0) : "U"}
+              </Avatar>
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"

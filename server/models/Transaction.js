@@ -5,10 +5,7 @@ const TransactionSchema = new mongoose.Schema(
   {
     userId: String,
     cost: String,
-    products: {
-      type: [mongoose.Types.objectId],
-      of: Number,
-    },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
   },
   { timestamps: true }
 );
